@@ -1,0 +1,106 @@
+import argparse
+
+class AgileCostCalculator:
+    def __init__(self, hourly_rate=150):
+        self.hourly_rate = hourly_rate
+
+    def calculate_hourly_cost(self, hours):
+        return self.hourly_rate * hours
+
+    def calculate_fixed_project_cost(self, project_scale):
+        if project_scale == 'small':
+            return 10000
+        elif project_scale == 'medium':
+            return 25000
+        elif project_scale == 'large':
+            return 100000
+        else:
+            return None
+
+    def calculate_retainer_cost(self, retainer_type):
+        if retainer_type == 'basic':
+            return 3000
+        elif retainer_type == 'standard':
+            return 5000
+        elif retainer_type == 'premium':
+            return 8000
+        else:
+            return None
+
+    def calculate_subscription_cost(self, subscription_type):
+        if subscription_type == 'basic':
+            return 1000
+        elif subscription_type == 'standard':
+            return 2000
+        elif subscription_type == 'premium':
+            return 3000
+        else:
+            return None
+
+    def calculate_consultation_cost(self, duration):
+        return self.hourly_rate * duration
+
+    def apply_promotional_discount(self, regular_price, discount_percentage):
+        discounted_price = regular_price * (1 - discount_percentage / 100)
+        return discounted_price
+
+def main():
+    parser = argparse.ArgumentParser(description='Calculate costs for agile IT services.')
+    parser.add_argument('service', choices=['hourly', 'project', 'retainer', 'subscription', 'consultation', 'discount'],
+                        help='Type of service to calculate cost for')
+    parser.add_argument('--duration', type=float, help='Duration in hours for hourly service or consultation')
+    parser.add_argument('--project-scale', choices=['small', 'medium', 'large'], help='Scale of the project for fixed project cost')
+    parser.add_argument('--retainer-type', choices=['basic', 'standard', 'premium'], help='Type of retainer')
+    parser.add_argument('--subscription-type', choices=['basic', 'standard', 'premium'], help='Type of subscription')
+    parser.add_argument('--regular-price', type=float, help='Regular price for applying discount')
+    parser.add_argument('--discount-percentage', type=float, help='Discount percentage to apply')
+
+    args = parser.parse_args()
+
+    cost_calculator = AgileCostCalculator()
+
+    if args.service == 'hourly':
+        if args.duration is None:
+            print("Error: Duration is required for hourly service")
+        else:
+            cost = cost_calculator.calculate_hourly_cost(args.duration)
+            print("Hourly cost:", cost)
+
+    elif args.service == 'project':
+        if args.project_scale is None:
+            print("Error: Project scale is required for project cost")
+        else:
+            cost = cost_calculator.calculate_fixed_project_cost(args.project_scale)
+            print("Fixed project cost:", cost)
+
+    elif args.service == 'retainer':
+        if args.retainer_type is None:
+            print("Error: Retainer type is required for retainer cost")
+        else:
+            cost = cost_calculator.calculate_retainer_cost(args.retainer_type)
+            print("Retainer cost:", cost)
+
+    elif args.service == 'subscription':
+        if args.subscription_type is None:
+            print("Error: Subscription type is required for subscription cost")
+        else:
+            cost = cost_calculator.calculate_subscription_cost(args.subscription_type)
+            print("Subscription cost:", cost)
+
+    elif args.service == 'consultation':
+        if args.duration is None:
+            print("Error: Duration is required for consultation")
+        else:
+            cost = cost_calculator.calculate_consultation_cost(args.duration)
+            print("Consultation cost:", cost)
+
+    elif args.service == 'discount':
+        if args.regular_price is None or args.discount_percentage is None:
+            print("Error: Both regular price and discount percentage are required for applying discount")
+        else:
+            discounted_price = cost_calculator.apply_promotional_discount(args.regular_price, args.discount_percentage)
+            print("Discounted price:", discounted_price)
+
+
+if __name__ == "__main__":
+    main()
